@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-     BASE_URI : "http://localhost:3000/api/auth",
-     withCredentials: true
+  baseURL: "http://localhost:3000/api/auth",
+  withCredentials: true
 })
 
 export async function regsiter({ username, email, password }) {
