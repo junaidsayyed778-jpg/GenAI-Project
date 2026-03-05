@@ -2,6 +2,7 @@ const { json } = require("express");
 const userModel = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const blacklistModel = require("../models/blacklistModel");
 
 /**
  *
@@ -58,7 +59,6 @@ async function registerUser(req, res) {
  * @name loginUserController
  * @description This controller will handle user login logic. It will receive user credentials from the request, validate them, and then generate a JWT token if the credentials are correct.
  */
-
 async function loginUser(req, res) {
   const { email, username, password } = req.body;
 
@@ -93,7 +93,50 @@ async function loginUser(req, res) {
         token
      })
 }
+
+/**
+ * 
+ * @name logoutUserController
+ * @description this controller will handle user logged out logic
+ */
+async function logoutUser(req, res){
+  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+
+  if(!token){
+    return res.status(400).json({
+      message: "Token is required"
+    })
+  }
+
+  await blacklistModel.create({ token });
+  
+  res.clearCookie("token");
+  res.status(200).json({
+    message: "User logged out successfully"
+  })
+}
+
+/**
+ * @name getMeController
+ * @description this controller will return the logged in user data
+ */
+async function getMe(req, res){
+
+  const user = await userModel.findById(req.user.userId).select("-password");
+
+  res.status(200).json({
+    message: "User data fetched",
+    user:{
+      id: user._id,
+      email: user.email,
+      username: user.username
+    }
+  })
+}
+
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
+  getMe
 };

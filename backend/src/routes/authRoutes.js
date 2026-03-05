@@ -1,5 +1,6 @@
 const express = require("express");
-const { registerUser, loginUser } = require("../controller/authController");
+const { registerUser, loginUser, logoutUser, getMe } = require("../controller/authController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 /** 
@@ -15,4 +16,17 @@ router.post("/register", registerUser)
  * @access public
  */
 router.post("/login", loginUser)
+
+/**
+ * @routtes POST /api/auth/logout
+ * @description logout a user
+ * @access private
+ */
+router.post("/logout", logoutUser)
+
+/**
+ * @routes GET /api/auth/me
+ * @description Get current logged in user
+ */
+router.get("/me",authMiddleware, getMe)
 module.exports = router;
