@@ -1,0 +1,72 @@
+// Dark Theme Variables
+$bg-color: #0f172a;
+$card-bg: #1e293b;
+$primary: #6366f1;
+$text: #e5e7eb;
+$muted: #9ca3af;
+$border: #374151;
+
+main {
+  min-height: 100vh;
+  background: $bg-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Inter", sans-serif;
+}
+
+.form-container {
+  background: $card-bg;
+  padding: 2.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+
+  h1 {
+    color: $text;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.2rem;
+
+  label {
+    color: $muted;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+  }
+
+  input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid $border;
+    background: transparent;
+    color: $text;
+    outline: none;
+    transition: 0.2s;
+
+    &::placeholder {
+      color: #6b7280;
+    }
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+    }
+  }
+}
+
+
+
+a {
+  color: $primary;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
