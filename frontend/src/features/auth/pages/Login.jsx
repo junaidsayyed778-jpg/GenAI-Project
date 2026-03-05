@@ -31,7 +31,7 @@ const Login = () => {
                 {/* register Link */}
       <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: '#a1a1aa' }}>
         Don't have an account?{' '}
-        <a href="/register" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>
+        <a href="/register" style={{ color: '#e1034d', textDecoration: 'none', fontWeight: 600 }}>
           register
         </a>
       </div>
