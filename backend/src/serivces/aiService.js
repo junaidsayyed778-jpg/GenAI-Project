@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GOOGLE_API_KEY,
 });
 
-const interbiewReportSchema = z.object({
+const interviewReportSchema = z.object({
   matchScore: z
     .number()
     .describe(
@@ -20,9 +20,7 @@ const interbiewReportSchema = z.object({
           .describe("Technical question can be asked in the interview"),
         intension: z
           .string()
-          .describe(
-            "The intension od interviewer behind asking this question",
-          ),
+          .describe("The intension od interviewer behind asking this question"),
         answer: z
           .string()
           .describe(
@@ -41,9 +39,7 @@ const interbiewReportSchema = z.object({
           .describe("Behaioral question can be asked in the interview"),
         intension: z
           .string()
-          .describe(
-            "The intension od interviewer behind asking this question",
-          ),
+          .describe("The intension od interviewer behind asking this question"),
         answer: z
           .string()
           .describe(
@@ -54,27 +50,25 @@ const interbiewReportSchema = z.object({
     .describe(
       "Behavioral questions that can be asked in the interview along with their intension and how to answer them",
     ),
-  skillsGaps: z.array(
+  skillGaps: z.array(
     z.object({
-      skill: z.array().describe("The skill which the candidate is lacking"),
+      skill: z.string().describe("The skill which the candidate is lacking"),
       severity: z
         .enum(["low", "medium", "high"])
         .describe(
-          "The severity of this skill gaps, i.e. how much it can impact the candidate chances of getting hired",
+          "The severity of this skill gap, i.e. how much it can impact the candidate's chances of getting hired",
         ),
     }),
   ),
-  prepaationPlan: z
+  preparationPlan: z
     .array(
       z.object({
         day: z
           .number()
-          .describe(
-            "The day number is the preparation plan, starting from 1",
-          ),
+          .describe("The day number in the preparation plan, starting from 1"),
         focus: z
           .string()
-          .describe("The main focus of the this day in preparing plan"),
+          .describe("The main focus of this day in the preparation plan"),
         tasks: z
           .string()
           .describe(
@@ -92,20 +86,36 @@ async function generateInterviewReport({
   selfDescription,
   jobDescription,
 }) {
-  const prompt = `Generate a interview report for a candidate with the following details:
-    Resume: ${resume}
-    Self Description: ${selfDescription}
-    Job Description: ${jobDescription}`;
+  const prompt = `Generate a detailed interview report for a candidate with the following details:
+Resume: ${resume}
+Self Description: ${selfDescription}
+Job Description: ${jobDescription}
+Return all fields: matchScore, technicalQuestions, behavioralQuestions, skillGaps, preparationPlan. Each field should be filled with relevant data.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: "",
+    model: "gemini-2.0-flash",
+    contents: prompt,
     config: {
       responseMimeType: "application/json",
-      responseSchema: zodToJsonSchema(interbiewReportSchema),
+      responseSchema: zodToJsonSchema(interviewReportSchema),
     },
   });
-  console.log((response.text));
+
+  const raw = response.text();
+
+  let report;
+
+  try {
+    report = JSON.parse(raw);
+  }  catch (error) {
+
+console.error("AI Error:", error.message);
+
+throw new Error("AI generation failed");
+
+}
+  console.log("Interview Report:", report);
+  return report;
 }
 
 module.exports = generateInterviewReport;
